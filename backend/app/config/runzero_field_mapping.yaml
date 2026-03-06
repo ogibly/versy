@@ -1,0 +1,89 @@
+identity:
+  stable_ids:
+    - id
+    - asset.id
+    - runzero.id
+  hostname:
+    - hostname
+    - name
+    - names.primary
+  vendor:
+    - vendor
+    - hardware.vendor
+    - fp.hw.vendor
+  model:
+    - model
+    - hardware.model
+    - fp.hw.product
+  serials:
+    - serial
+    - hardware.serial
+    - snmp.serialNumbers
+  ips:
+    - addresses
+    - ips
+    - network.ips
+  macs:
+    - macs
+    - network.macs
+    - snmp.interfaceMacs
+  asset_type:
+    - asset_type
+    - type
+    - classification
+  environment:
+    - environment
+    - tags.environment
+timestamps:
+  first_seen_at:
+    - first_seen
+    - first_seen_ts
+  last_seen_at:
+    - last_seen
+    - last_seen_ts
+components:
+  OS:
+    version:
+      - os.version
+      - fp.os.version
+    observed_at:
+      - last_seen
+      - last_seen_ts
+  BIOS:
+    version:
+      - bios.version
+    observed_at:
+      - last_seen
+      - last_seen_ts
+  Firmware:
+    version:
+      - firmware.version
+      - appliance.firmware
+    observed_at:
+      - last_seen
+      - last_seen_ts
+  NetworkOS:
+    version:
+      - network_os.version
+      - nos.version
+    observed_at:
+      - last_seen
+      - last_seen_ts
+  HypervisorOS:
+    version:
+      - hypervisor.version
+    observed_at:
+      - last_seen
+      - last_seen_ts
+  StorageOS:
+    version:
+      - storage_os.version
+    observed_at:
+      - last_seen
+      - last_seen_ts
+  ApplianceFW:
+    version:
+      - appliance_fw.version
+    observed_at:
+      - last_seen
+      - last_seen_ts
