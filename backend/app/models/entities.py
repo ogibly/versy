@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from uuid import uuid4
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Text, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, ForeignKey, Text, UniqueConstraint, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import JSON
 
@@ -21,7 +21,7 @@ def _now() -> datetime:
 class Asset(Base):
     __tablename__ = 'assets'
 
-    id: Mapped[str] = mapped_column(Text, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True, default=_uuid)
     asset_type: Mapped[str] = mapped_column(Text, nullable=False, default='other')
     vendor: Mapped[str | None] = mapped_column(Text)
     model: Mapped[str | None] = mapped_column(Text)
@@ -38,7 +38,7 @@ class Asset(Base):
 class ComponentType(Base):
     __tablename__ = 'component_types'
 
-    id: Mapped[str] = mapped_column(Text, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True, default=_uuid)
     key: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
 
@@ -53,9 +53,9 @@ class Observation(Base):
         UniqueConstraint('asset_id', 'component_type_id', 'observed_at', 'version', name='uq_observations_asset_component_seen_version'),
     )
 
-    id: Mapped[str] = mapped_column(Text, primary_key=True, default=_uuid)
-    asset_id: Mapped[str] = mapped_column(ForeignKey('assets.id', ondelete='CASCADE'), nullable=False)
-    component_type_id: Mapped[str] = mapped_column(ForeignKey('component_types.id', ondelete='RESTRICT'), nullable=False)
+    id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True, default=_uuid)
+    asset_id: Mapped[str] = mapped_column(Uuid(as_uuid=False), ForeignKey('assets.id', ondelete='CASCADE'), nullable=False)
+    component_type_id: Mapped[str] = mapped_column(Uuid(as_uuid=False), ForeignKey('component_types.id', ondelete='RESTRICT'), nullable=False)
     version: Mapped[str] = mapped_column(Text, nullable=False)
     observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     source: Mapped[str] = mapped_column(Text, nullable=False, default='runzero')
@@ -68,8 +68,8 @@ class Observation(Base):
 class Policy(Base):
     __tablename__ = 'policies'
 
-    id: Mapped[str] = mapped_column(Text, primary_key=True, default=_uuid)
-    component_type_id: Mapped[str] = mapped_column(ForeignKey('component_types.id', ondelete='RESTRICT'), nullable=False)
+    id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True, default=_uuid)
+    component_type_id: Mapped[str] = mapped_column(Uuid(as_uuid=False), ForeignKey('component_types.id', ondelete='RESTRICT'), nullable=False)
     asset_type: Mapped[str | None] = mapped_column(Text)
     vendor: Mapped[str | None] = mapped_column(Text)
     model: Mapped[str | None] = mapped_column(Text)
@@ -91,12 +91,12 @@ class Policy(Base):
 class Evaluation(Base):
     __tablename__ = 'evaluations'
 
-    id: Mapped[str] = mapped_column(Text, primary_key=True, default=_uuid)
-    asset_id: Mapped[str] = mapped_column(ForeignKey('assets.id', ondelete='CASCADE'), nullable=False)
-    component_type_id: Mapped[str] = mapped_column(ForeignKey('component_types.id', ondelete='RESTRICT'), nullable=False)
+    id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True, default=_uuid)
+    asset_id: Mapped[str] = mapped_column(Uuid(as_uuid=False), ForeignKey('assets.id', ondelete='CASCADE'), nullable=False)
+    component_type_id: Mapped[str] = mapped_column(Uuid(as_uuid=False), ForeignKey('component_types.id', ondelete='RESTRICT'), nullable=False)
     observed_version: Mapped[str] = mapped_column(Text, nullable=False)
     lifecycle_tier: Mapped[str] = mapped_column(Text, nullable=False)
-    matched_policy_id: Mapped[str | None] = mapped_column(ForeignKey('policies.id', ondelete='SET NULL'))
+    matched_policy_id: Mapped[str | None] = mapped_column(Uuid(as_uuid=False), ForeignKey('policies.id', ondelete='SET NULL'))
     evaluated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=_now)
     rationale: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
 
@@ -108,7 +108,7 @@ class Evaluation(Base):
 class IngestionRun(Base):
     __tablename__ = 'ingestion_runs'
 
-    id: Mapped[str] = mapped_column(Text, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True, default=_uuid)
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=_now)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     status: Mapped[str] = mapped_column(Text, nullable=False)
@@ -120,8 +120,8 @@ class IngestionRun(Base):
 class PolicyAuditLog(Base):
     __tablename__ = 'policy_audit_log'
 
-    id: Mapped[str] = mapped_column(Text, primary_key=True, default=_uuid)
-    policy_id: Mapped[str] = mapped_column(ForeignKey('policies.id', ondelete='CASCADE'), nullable=False)
+    id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True, default=_uuid)
+    policy_id: Mapped[str] = mapped_column(Uuid(as_uuid=False), ForeignKey('policies.id', ondelete='CASCADE'), nullable=False)
     actor: Mapped[str | None] = mapped_column(Text)
     action: Mapped[str] = mapped_column(Text, nullable=False)
     diff: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)

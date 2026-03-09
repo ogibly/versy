@@ -42,7 +42,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: ["/bin/sh", "-c", "alembic upgrade head && python -m app.worker"]
+    command: ["python", "-m", "app.worker"]
 
   frontend:
     build:
